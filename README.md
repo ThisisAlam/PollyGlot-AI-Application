@@ -1,75 +1,176 @@
-# React + TypeScript + Vite
+# 🦜 PollyGlot AI Translator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+PollyGlot is a small AI-powered translation application built with **React, TypeScript, Vite, Node.js, Express, and the OpenAI API**.
 
-Currently, two official plugins are available:
+The application allows users to enter a message, choose a target language, and receive an AI-generated translation in a chat-style interface.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+* AI-powered text translation
+* Chat-style user and AI messages
+* Translate into:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+  * 🇫🇷 French
+  * 🇪🇸 Spanish
+  * 🇯🇵 Japanese
+* Automatic scrolling to the newest message
+* Clear chat functionality
+* Loading state while translation is being generated
+* Responsive user interface
+* Secure OpenAI API integration through an Express backend
+* Environment-variable based API configuration
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Frontend
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* React
+* TypeScript
+* Vite
+* CSS
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Backend
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+* Node.js
+* Express.js
+* OpenAI API
+* dotenv
+* CORS
 
+## 🧠 How It Works
+
+1. The user enters a message.
+2. The user selects French, Spanish, or Japanese.
+3. React sends the text and selected language to the Express backend.
+4. The backend sends the request to the OpenAI API.
+5. OpenAI generates the translated text.
+6. The translated response is returned to React.
+7. The result appears as an AI message in the conversation.
+
+```text
+User
+  ↓
+React Frontend
+  ↓
+Express API
+  ↓
+OpenAI
+  ↓
+Express API
+  ↓
+React Chat Interface
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📁 Project Structure
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```text
+PollyGlot-AI-Application/
+│
+├── src/
+│   ├── assets/
+│   ├── App.tsx
+│   ├── App.css
+│   └── main.tsx
+│
+├── server/
+│   ├── server.js
+│   ├── package.json
+│   └── .env
+│
+├── public/
+├── package.json
+├── vite.config.ts
+└── README.md
 ```
+
+## 🚀 Running the Project
+
+Clone the repository:
+
+```bash
+git clone <repository-url>
+cd PollyGlot-AI-Application
+```
+
+Install the frontend dependencies:
+
+```bash
+npm install
+```
+
+Install the backend dependencies:
+
+```bash
+cd server
+npm install
+```
+
+Create a `.env` file inside the `server` directory:
+
+```env
+OPENAI_API_KEY=your_openai_api_key
+OPENAI_AI_MODEL=your_model_name
+```
+
+Do not commit your `.env` file or API key to GitHub.
+
+Start the backend server:
+
+```bash
+node server.js
+```
+
+The backend will run at:
+
+```text
+http://localhost:3001
+```
+
+Open another terminal, return to the project root, and start the frontend:
+
+```bash
+npm run dev
+```
+
+The Vite application will normally run at:
+
+```text
+http://localhost:5173
+```
+
+## 🔐 API Key Security
+
+The OpenAI API key is stored only on the backend.
+
+The React frontend never communicates directly with OpenAI and does not expose the API key to the browser.
+
+## 🎯 What I Practiced
+
+This project helped me practice:
+
+* React state management
+* TypeScript types
+* Rendering dynamic chat messages
+* Working with arrays of objects in React state
+* Async API requests
+* OpenAI API integration
+* Building an Express backend
+* Environment variables
+* Frontend/backend communication
+* Loading states
+* Automatic chat scrolling
+* Responsive UI design
+
+## 🔮 Possible Future Improvements
+
+* Add more languages
+* Add language auto-detection
+* Add copy-to-clipboard functionality
+* Add translation history
+* Add improved error handling
+* Add animated typing/loading indicators
+* Deploy the frontend and backend
+
+## 📄 License
+
+This project is built for learning and portfolio purposes.
