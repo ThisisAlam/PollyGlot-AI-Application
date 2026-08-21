@@ -68,7 +68,6 @@ PollyGlot-AI-Application/
 │
 ├── src/
 │   ├── assets/
-│   ├── components/
 │   ├── App.tsx
 │   ├── App.css
 │   └── main.tsx
