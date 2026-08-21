@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import "./App.css";
 
 import franceFlag from "./assets/fr-flag.png";
@@ -15,6 +16,8 @@ type Message = {
 };
 
 export default function App() {
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
+
   const [selectedLanguage, setSelectedLanguage] =
     useState<Language>("French");
 
@@ -26,23 +29,37 @@ export default function App() {
     {
       id: 1,
       role: "user",
-      text: "How are you?",
+      text: "(Hint) How are you?",
     },
     {
       id: 2,
       role: "assistant",
-      text: "Comment allez-vous?",
+      text: "(Hint) Comment allez-vous?",
     },
   ]);
 
-  const handleSend = () => {
+  // loading state:
+  const clearChat = () => {
+    setMessages([
+      {
+        id: 1,
+        role: "assistant",
+        text: "Translate with me",
+      },
+    ]);
+  };
+
+  // loading state:
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSend = async () => {
     // Stop if textarea is empty
     if (!message.trim()) return;
-
+    const userText = message;
     const newUserMessage: Message = {
       id: Date.now(),
       role: "user",
-      text: message,
+      text: userText,
     };
 
     // Add the new message to the chat
@@ -53,7 +70,66 @@ export default function App() {
 
     // Clear textarea
     setMessage("");
+    setIsLoading(true);
+
+    try {
+      // Fetching local-host
+      const response = await fetch(
+        "http://localhost:3001/translate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: userText,
+            language: selectedLanguage,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Translation request failed.");
+      }
+
+      const data = await response.json();
+
+      const aiMessage: Message = {
+        id: Date.now() + 1,
+        role: "assistant",
+        text: data.translation,
+      };
+
+      setMessages((previousMessages) => [
+        ...previousMessages,
+        aiMessage,
+      ]);
+
+    } catch (error) {
+
+      console.error(error);
+
+      const errorMessage: Message = {
+        id: Date.now() + 1,
+        role: "assistant",
+        text: "Sorry, I couldn't translate that.",
+      };
+
+      setMessages((previousMessages) => [
+        ...previousMessages,
+        errorMessage,
+      ]);
+
+    } finally {
+      setIsLoading(false);
+    }
+
   };
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages, isLoading]);
 
   return (
     <main className="app">
@@ -81,7 +157,7 @@ export default function App() {
 
           </div>
         </header>
-        
+
         <div className="how-to-use">
           <div className="info-icon">i</div>
           <div className="how-to-use-divider"></div>
@@ -97,6 +173,19 @@ export default function App() {
         {/* Translator content */}
         <section className="chat-container">
 
+          <div className="chat-header">
+            <span>Conversation</span>
+
+            <button
+              className="clear-chat-button"
+              onClick={clearChat}
+              disabled={messages.length === 0}
+              type="button"
+            >
+              Clear chat
+            </button>
+          </div>
+
           {/* Chat Area */}
           <div className="chat-area">
             {messages.map((chatMessage) => (
@@ -111,6 +200,14 @@ export default function App() {
                 {chatMessage.text}
               </div>
             ))}
+
+            {isLoading && (
+              <div className="chat-message ai-chat loading-message">
+                Translating...
+              </div>
+            )
+            }
+            <div ref={chatEndRef} />
           </div>
 
           {/* Input */}
@@ -126,6 +223,7 @@ export default function App() {
             <button
               className="send-button"
               onClick={handleSend}
+              disabled={isLoading}
             >
               ➤
             </button>
